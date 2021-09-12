@@ -61,6 +61,8 @@ def createFileReq(filename : str) -> bytearray:
 
 
 def unpackFileReq(data : bytes) -> str:
+    if len(data) < 5:
+        raise AppError("Recieved packet is too short to be a file request")
     if data[0] != 0x49 or data[1] != 0x7e:
         raise AppError("Receieved file request is invalid")
     if data[2] != 1:
@@ -93,6 +95,8 @@ def createFileRes(file : FileIO) -> bytearray:
 
 
 def unpackFileRes(data : bytes) -> bytes:
+    if len(data) < 8:
+        raise AppError("Recieved packet is too short to be a file response")
     if data[0] != 0x49 or data[1] != 0x7e:
         raise AppError("Receieved file response is invalid")
     if data[2] != 2:
