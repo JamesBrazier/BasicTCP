@@ -69,10 +69,10 @@ def unpackFileReq(data : bytes) -> str:
         raise AppError("Received packet is not a file request")
 
     filenameLen = bytesToShort(data[3], data[4])
-    filename = bytearray(filenameLen)
+    filename = data[5:]
 
-    for i in range(filenameLen):
-        filename[i] = data[5 + i]
+    if len(filename) != filenameLen:
+        raise AppError("Recieved filename of unexpected length")
 
     return str(filename, "utf-8")
 
@@ -103,12 +103,16 @@ def unpackFileRes(data : bytes) -> bytes:
         raise AppError("Received packet is not a file response")
     if data[3] != 1:
         if data[3] != 0:
-            raise AppError("Receieved packet was an invalid status code")
+            raise AppError("Receieved packet has an invalid status code")
         raise AppError("The server was unable to locate file")
 
-    dataLen = bytesToInt(data[4], data[5], data[6], data[7])
+    fileLen = bytesToInt(data[4], data[5], data[6], data[7])
+    file = data[8:]
 
-    return dataLen, data[8:]
+    if len(file) != fileLen:
+        raise AppError("Received file data is of unexpected length")
+    
+    return fileLen, data[8:]
 
 
 if __name__ == "__main__":
