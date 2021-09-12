@@ -30,7 +30,12 @@ def bytesToShort(byteA : int, byteB : int) -> int:
 
 
 def intToBytes(integer : int) -> tuple:
-    return (integer & 0xff000000) >> 24, (integer & 0xff0000) >> 16, (integer & 0xff00) >> 8, integer & 0xff
+    return (
+        (integer & 0xff000000) >> 24, 
+        (integer & 0xff0000) >> 16, 
+        (integer & 0xff00) >> 8,
+        integer & 0xff
+    )
 
 
 def bytesToInt(byteA : int, byteB : int, byteC : int, byteD : int) -> int:
@@ -46,7 +51,7 @@ def createFileReq(filename : str) -> bytearray:
     filename = filename.encode("utf-8")
     filenameLen = len(filename)
 
-    if filenameLen > 65535:
+    if filenameLen > 2043:
         raise AppError(f"Given filename is too long")
 
     data = bytearray(5)
