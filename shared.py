@@ -46,7 +46,7 @@ def createFileReq(filename : str) -> bytearray:
     filename = filename.encode("utf-8")
     filenameLen = len(filename)
 
-    if filenameLen >= 1024:
+    if filenameLen > 65535:
         raise AppError(f"Given filename is too long")
 
     data = bytearray(5)
