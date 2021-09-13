@@ -54,10 +54,10 @@ def main():
                     recvdData += len(data)
 
                 if recvdData != dataLen:
-                    print(f"Receieved an unexpected number of bytes, deleting {file}...")
                     fileObj.truncate(0)
                     fileObj.close()
                     remove(dataFile)
+                    raise AppError(f"Receieved an unexpected number of bytes, '{file}' deleted...")
 
             print(f"File '{file}' (size: {recvdData} bytes) recieved successfully")
             

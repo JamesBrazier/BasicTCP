@@ -1,10 +1,19 @@
 from io import FileIO
 from socket import socket
+from time import sleep
 from os import SEEK_END
 
 class AppError(Exception):
-    def __init__(self, *args: object) -> None:
+    def __init__(self, *args: object):
         super().__init__(*args)
+
+
+def wait(sock : socket, secs : float):
+    try:
+        sleep(secs)
+    except KeyboardInterrupt:
+        sock.close()
+        exit()
 
 
 def addrToStr(address : tuple) -> str:
@@ -43,6 +52,7 @@ def bytesToInt(byteA : int, byteB : int, byteC : int, byteD : int) -> int:
 
 
 def shutdown(socket : socket):
+    socket.shutdown()
     socket.close()
     exit()
 
@@ -112,10 +122,6 @@ def unpackFileRes(data : bytes) -> bytes:
         raise AppError("The server was unable to locate file")
 
     fileLen = bytesToInt(data[4], data[5], data[6], data[7])
-    file = data[8:]
-
-    if len(file) != fileLen:
-        raise AppError("Received file data is of unexpected length")
     
     return fileLen, data[8:]
 

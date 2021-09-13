@@ -22,9 +22,10 @@ def main():
         server = socket(AF_INET, SOCK_STREAM)
         server.bind(("", port))
         server.listen()
+        server.setblocking(False)
         print(f"Server listening on port {port}...")
 
-    except (OSError, AppError) as err:
+    except OSError as err:
         print(f"\n{err}\n")
         exit()
 
@@ -59,13 +60,13 @@ def main():
 
             print(f"Connection {addrToStr(address)} closed")
 
-        except KeyboardInterrupt:
-            server.close()
-            exit()
-        except (OSError, AppError) as err:
-            print(f"\n{err}\n")
+        except BlockingIOError:
+            wait(server, 0.1)
             continue
-            #raise error
+
+        except (OSError, AppError) as err:
+            print(f"\nConnection error: {err}\n")
+            continue
 
 
 main()
