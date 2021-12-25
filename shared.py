@@ -1,19 +1,10 @@
 from io import FileIO
 from socket import socket
-from time import sleep
 from os import SEEK_END
 
 class AppError(Exception):
     def __init__(self, *args: object):
         super().__init__(*args)
-
-
-def wait(sock : socket, secs : float):
-    try:
-        sleep(secs)
-    except KeyboardInterrupt:
-        sock.close()
-        exit()
 
 
 def addrToStr(address : tuple) -> str:
